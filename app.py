@@ -16,6 +16,10 @@ def check_winner(board):
     return None
 
 
+def is_board_full(board):
+    return all(cell != "" for row in board for cell in row)
+
+
 def main():
     st.title("Two Player Tic-Tac-Toe")
 
@@ -28,6 +32,13 @@ def main():
     winner = check_winner(st.session_state.board)
     if winner:
         st.success(f"Player {winner} wins!")
+        if st.button("Restart Game"):
+            st.session_state.board = [["" for _ in range(3)] for _ in range(3)]
+            st.session_state.turn = "X"
+        return
+
+    if is_board_full(st.session_state.board):
+        st.warning("It's a draw!")
         if st.button("Restart Game"):
             st.session_state.board = [["" for _ in range(3)] for _ in range(3)]
             st.session_state.turn = "X"
