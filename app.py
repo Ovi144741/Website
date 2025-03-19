@@ -58,22 +58,34 @@ if st.session_state.winner:
     st.stop()
 
 # Player 2 (Flipped Layout for Opponent)
-st.markdown("<h2 style='text-align: center; transform: rotate(180deg);'>Player 2</h2>", unsafe_allow_html=True)
-st.markdown(f"<h3 style='text-align: center; transform: rotate(180deg);'>{st.session_state.num1} + {st.session_state.num2} = ?</h3>", unsafe_allow_html=True)
+st.markdown(
+    """
+    <div style='text-align: center; transform: rotate(180deg);'>
+        <h2>Player 2</h2>
+        <h3>{} + {} = ?</h3>
+    </div>
+    """.format(st.session_state.num1, st.session_state.num2),
+    unsafe_allow_html=True
+)
 
 # Player 2 Answer Buttons (Flipped)
+st.markdown("<div style='transform: rotate(180deg);'>", unsafe_allow_html=True)
 col1, col2, col3 = st.columns(3)
 with col1:
-    if st.button(f"🔄 {st.session_state.options[0]}", key="p2_opt1"):
+    if st.button(f"{st.session_state.options[0]}", key="p2_opt1"):
         check_answer(2, st.session_state.options[0])
 with col2:
-    if st.button(f"🔄 {st.session_state.options[1]}", key="p2_opt2"):
+    if st.button(f"{st.session_state.options[1]}", key="p2_opt2"):
         check_answer(2, st.session_state.options[1])
 with col3:
-    if st.button(f"🔄 {st.session_state.options[2]}", key="p2_opt3"):
+    if st.button(f"{st.session_state.options[2]}", key="p2_opt3"):
         check_answer(2, st.session_state.options[2])
+st.markdown("</div>", unsafe_allow_html=True)
 
-st.markdown(f"<h3 style='text-align: center; transform: rotate(180deg);'>Score: {st.session_state.player2_score}</h3>", unsafe_allow_html=True)
+st.markdown(
+    "<h3 style='text-align: center; transform: rotate(180deg);'>Score: {}</h3>".format(st.session_state.player2_score),
+    unsafe_allow_html=True
+)
 
 st.markdown("---")
 
