@@ -1,23 +1,32 @@
 import streamlit as st
 import datetime
 
-# ---- PAGE CONFIG ----
-st.set_page_config(page_title="My Modern Blog", layout="wide")
+# ---- PAGE CONFIGURATION ----
+st.set_page_config(page_title="My Modern Blog", page_icon="📝", layout="wide")
 
-# ---- CUSTOM STYLING ----
+# ---- CUSTOM CSS STYLING ----
 st.markdown("""
     <style>
-        /* Background Color */
+        /* Background Styling */
         body {
             background-color: #f8f9fa;
         }
 
-        /* Main Title */
+        /* Blog Title */
         .main-title {
             text-align: center;
             font-size: 3rem;
             font-weight: bold;
-            color: #333;
+            color: #222;
+            margin-bottom: 10px;
+        }
+
+        /* Blog Subtitle */
+        .subtitle {
+            text-align: center;
+            font-size: 1.3rem;
+            color: #666;
+            margin-bottom: 30px;
         }
 
         /* Blog Post Title */
@@ -25,6 +34,14 @@ st.markdown("""
             font-size: 2rem;
             font-weight: bold;
             color: #007BFF;
+            margin-bottom: 5px;
+        }
+
+        /* Post Date */
+        .post-date {
+            font-size: 0.9rem;
+            color: #888;
+            margin-bottom: 15px;
         }
 
         /* Post Content */
@@ -33,15 +50,9 @@ st.markdown("""
             color: #444;
         }
 
-        /* Date */
-        .post-date {
-            font-size: 0.9rem;
-            color: #888;
-        }
-
         /* Navigation Sidebar */
         .css-1d391kg {
-            background-color: #343a40 !important;
+            background-color: #222 !important;
             color: white !important;
         }
 
@@ -51,24 +62,41 @@ st.markdown("""
             color: #155724 !important;
             border-left: 5px solid #28a745 !important;
         }
+
+        /* Publish Button */
+        .stButton>button {
+            background-color: #007BFF;
+            color: white;
+            font-size: 1rem;
+            border-radius: 8px;
+            padding: 10px 20px;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            font-size: 0.9rem;
+            color: #777;
+            margin-top: 50px;
+        }
     </style>
 """, unsafe_allow_html=True)
 
 # ---- SIDEBAR NAVIGATION ----
 st.sidebar.title("📌 Navigation")
-menu = st.sidebar.radio("Go to", ["🏠 Home", "📝 New Post", "👤 About"])
+menu = st.sidebar.radio("Go to", ["🏠 Home", "📝 Write a Post", "👤 About"])
 
-# Initialize session state for blog posts
+# ---- SESSION STATE FOR BLOG POSTS ----
 if "posts" not in st.session_state:
     st.session_state.posts = []
 
 # ---- HOME PAGE ----
 if menu == "🏠 Home":
     st.markdown('<h1 class="main-title">📖 My Modern Blog</h1>', unsafe_allow_html=True)
-    st.write("Welcome to my personal blog! Explore my latest posts below. 🚀")
+    st.markdown('<p class="subtitle">A place to share thoughts and ideas</p>', unsafe_allow_html=True)
 
     if not st.session_state.posts:
-        st.info("No blog posts yet. Click on 'New Post' to add one!")
+        st.info("No blog posts yet. Click on 'Write a Post' to add one!")
     else:
         for post in reversed(st.session_state.posts):
             with st.container():
@@ -78,8 +106,8 @@ if menu == "🏠 Home":
                 st.markdown("---")
 
 # ---- NEW POST PAGE ----
-elif menu == "📝 New Post":
-    st.markdown('<h1 class="main-title">📝 Write a New Blog Post</h1>', unsafe_allow_html=True)
+elif menu == "📝 Write a Post":
+    st.markdown('<h1 class="main-title">📝 Create a New Blog Post</h1>', unsafe_allow_html=True)
 
     with st.form("blog_form"):
         title = st.text_input("Post Title", placeholder="Enter a catchy title...")
@@ -97,6 +125,7 @@ elif menu == "📝 New Post":
 # ---- ABOUT PAGE ----
 elif menu == "👤 About":
     st.markdown('<h1 class="main-title">👤 About Me</h1>', unsafe_allow_html=True)
+
     col1, col2 = st.columns([1, 2])
 
     with col1:
@@ -106,3 +135,5 @@ elif menu == "👤 About":
         st.write("Hi! I'm a passionate blogger who loves sharing insights and experiences. 🌎")
         st.write("This blog is built using [Streamlit](https://streamlit.io/). Hope you enjoy reading!")
 
+# ---- FOOTER ----
+st.markdown('<p class="footer">Made with ❤️ using Streamlit</p>', unsafe_allow_html=True)
