@@ -1,39 +1,96 @@
 import streamlit as st
+import random
 
-# Define a list of riddles
-riddles = [
-    {
-        "question": "I speak without a mouth and hear without ears. I have no body, but I come alive with the wind. What am I?",
-        "answer": "An Echo"},
-    {
-        "question": "I am not alive, but I grow; I don’t have lungs, but I need air; I don’t have a mouth, and I can drown. What am I?",
-        "answer": "Fire"},
-    {"question": "The more of this there is, the less you see. What is it?", "answer": "Darkness"},
-    {"question": "What has keys but can't open locks?", "answer": "A Piano"},
-    {"question": "What comes once in a minute, twice in a moment, but never in a thousand years?",
-     "answer": "The letter 'M'"},
-]
+# Initialize session state variables
+if "player1_score" not in st.session_state:
+    st.session_state.player1_score = 0
+if "player2_score" not in st.session_state:
+    st.session_state.player2_score = 0
+if "num1" not in st.session_state:
+    st.session_state.num1 = random.randint(1, 10)
+if "num2" not in st.session_state:
+    st.session_state.num2 = random.randint(1, 10)
+if "winner" not in st.session_state:
+    st.session_state.winner = None
+if "options" not in st.session_state:
+    correct = st.session_state.num1 + st.session_state.num2
+    wrong1 = correct + random.choice([-2, -1, 1, 2])
+    wrong2 = correct + random.choice([-3, -1, 1, 3])
+    st.session_state.options = random.sample([correct, wrong1, wrong2], 3)
 
-# Set up the Streamlit page
-st.title("Riddles Game")
-st.markdown("Welcome to the riddles game! Try to solve the following riddles:")
+# Generate a new question
+def new_question():
+    st.session_state.num1 = random.randint(1, 10)
+    st.session_state.num2 = random.randint(1, 10)
+    correct = st.session_state.num1 + st.session_state.num2
+    wrong1 = correct + random.choice([-2, -1, 1, 2])
+    wrong2 = correct + random.choice([-3, -1, 1, 3])
+    st.session_state.options = random.sample([correct, wrong1, wrong2], 3)
 
-# Display riddles and get answers from the user
-score = 0
-for i, riddle in enumerate(riddles):
-    st.subheader(f"Riddle {i + 1}:")
-    st.write(riddle['question'])
+# Check if the answer is correct
+def check_answer(player, answer):
+    correct_answer = st.session_state.num1 + st.session_state.num2
+    if answer == correct_answer:
+        if player == 1:
+            st.session_state.player1_score += 1
+        else:
+            st.session_state.player2_score += 1
 
-    # Input box for the answer
-    user_answer = st.text_input(f"Your answer for Riddle {i + 1}:")
+    # Check if a player has won
+    if st.session_state.player1_score >= 10:
+        st.session_state.winner = "Player 1"
+    elif st.session_state.player2_score >= 10:
+        st.session_state.winner = "Player 2"
+    else:
+        new_question()
 
-    # Check the answer and give feedback
-    if user_answer.lower() == riddle["answer"].lower():
-        st.success("Correct!")
-        score += 1
-    elif user_answer != "":
-        st.error("Wrong answer!")
+# Layout
+st.title("🔢 Head-to-Head Math Quiz")
+st.subheader("First to 10 points wins!")
 
-# Display the user's score at the end
-if st.button("Check your score"):
-    st.write(f"Your score is: {score}/{len(riddles)}")
+if st.session_state.winner:
+    st.success(f"🏆 {st.session_state.winner} Wins!")
+    if st.button("Play Again"):
+        st.session_state.player1_score = 0
+        st.session_state.player2_score = 0
+        st.session_state.winner = None
+        new_question()
+    st.stop()
+
+# Player 2 (Flipped Layout for Opponent)
+st.markdown("<h2 style='text-align: center; transform: rotate(180deg);'>Player 2</h2>", unsafe_allow_html=True)
+st.markdown(f"<h3 style='text-align: center; transform: rotate(180deg);'>{st.session_state.num1} + {st.session_state.num2} = ?</h3>", unsafe_allow_html=True)
+
+# Player 2 Answer Buttons (Flipped)
+col1, col2, col3 = st.columns(3)
+with col1:
+    if st.button(f"🔄 {st.session_state.options[0]}", key="p2_opt1"):
+        check_answer(2, st.session_state.options[0])
+with col2:
+    if st.button(f"🔄 {st.session_state.options[1]}", key="p2_opt2"):
+        check_answer(2, st.session_state.options[1])
+with col3:
+    if st.button(f"🔄 {st.session_state.options[2]}", key="p2_opt3"):
+        check_answer(2, st.session_state.options[2])
+
+st.markdown(f"<h3 style='text-align: center; transform: rotate(180deg);'>Score: {st.session_state.player2_score}</h3>", unsafe_allow_html=True)
+
+st.markdown("---")
+
+# Player 1 (Normal Layout)
+st.header("Player 1")
+st.write(f"**Question:** {st.session_state.num1} + {st.session_state.num2} = ?")
+
+# Player 1 Answer Buttons
+col4, col5, col6 = st.columns(3)
+with col4:
+    if st.button(f"{st.session_state.options[0]}", key="p1_opt1"):
+        check_answer(1, st.session_state.options[0])
+with col5:
+    if st.button(f"{st.session_state.options[1]}", key="p1_opt2"):
+        check_answer(1, st.session_state.options[1])
+with col6:
+    if st.button(f"{st.session_state.options[2]}", key="p1_opt3"):
+        check_answer(1, st.session_state.options[2])
+
+st.write(f"Score: **{st.session_state.player1_score}**")
