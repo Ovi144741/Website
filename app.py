@@ -6,7 +6,7 @@ def show_banglish():
     st.subheader("Banglish (English Transliteration)")
     banglish = {
         "English": [
-            "Hello", "How are you?", "Thank you", "Goodbye", "What is your name?", "My name is...",
+            "Hello", "How are you?", "Thank you", "Bye", "What is your name?", "My name is...",
             "Where are you from?", "I am from...", "How much is this?", "I don't understand",
             "Can you help me?", "I love you", "See you later", "Good morning", "Good night",
             "Excuse me", "Sorry", "Yes", "No", "Please", "What time is it?", "Where is the bathroom?",
@@ -29,7 +29,7 @@ def show_banglish():
             "Where is the nearest ATM?", "What is your favorite place?", "Can I get a discount?"
         ],
         "Banglish": [
-            "Assalamualaikum", "Apni kemon achen?", "Dhonnobad", "Alo bidai", "Apnar naam ki?", "Amar naam...",
+            "Assalamualaikum", "Apni kemon achen?", "Dhonnobad", "Biday", "Apnar naam ki?", "Amar naam...",
             "Apni kotha theke aschen?", "Ami ... theke aschi", "Eta koto taka?", "Ami bujhte parchina",
             "Apni ki amake shahajjo korte parben?", "Ami tomake bhalobashi", "Pore dekha hobe", "Shuprobhat", "Shubho raatri",
             "Dukkho korchi", "Maaf korben", "Haan", "Na", "Doyakore", "Ekhon kotota baje?", "Toilet kothay?",
