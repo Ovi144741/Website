@@ -57,7 +57,7 @@ if st.session_state.winner:
         new_question()
     st.stop()
 
-# Player 2 (Flipped Layout for Opponent)
+# ========== PLAYER 2 (Top, Mirrored UI) ==========
 st.markdown(
     """
     <div style='text-align: center; transform: rotate(180deg);'>
@@ -89,7 +89,7 @@ st.markdown(
 
 st.markdown("---")
 
-# Player 1 (Normal Layout)
+# ========== PLAYER 1 (Bottom, Normal UI) ==========
 st.header("Player 1")
 st.write(f"**Question:** {st.session_state.num1} + {st.session_state.num2} = ?")
 
