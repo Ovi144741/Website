@@ -1,49 +1,46 @@
 import streamlit as st
-import random
+import numpy as np
+
+
+def check_winner(board):
+    for row in board:
+        if row[0] == row[1] == row[2] and row[0] != "":
+            return row[0]
+    for col in range(3):
+        if board[0][col] == board[1][col] == board[2][col] and board[0][col] != "":
+            return board[0][col]
+    if board[0][0] == board[1][1] == board[2][2] and board[0][0] != "":
+        return board[0][0]
+    if board[0][2] == board[1][1] == board[2][0] and board[0][2] != "":
+        return board[0][2]
+    return None
 
 
 def main():
-    st.title("Simple Game Website")
-    st.header("Guess the Number Game")
+    st.title("Two Player Tic-Tac-Toe")
 
-    if 'number' not in st.session_state:
-        st.session_state.number = random.randint(1, 100)
+    if 'board' not in st.session_state:
+        st.session_state.board = [["" for _ in range(3)] for _ in range(3)]
 
-    if 'attempts' not in st.session_state:
-        st.session_state.attempts = 0
+    if 'turn' not in st.session_state:
+        st.session_state.turn = "X"
 
-    if 'leaderboard' not in st.session_state:
-        st.session_state.leaderboard = []
+    winner = check_winner(st.session_state.board)
+    if winner:
+        st.success(f"Player {winner} wins!")
+        if st.button("Restart Game"):
+            st.session_state.board = [["" for _ in range(3)] for _ in range(3)]
+            st.session_state.turn = "X"
+        return
 
-    difficulty = st.radio("Select Difficulty:", ("Easy", "Medium", "Hard"))
-
-    if difficulty == "Easy":
-        max_value = 100
-    elif difficulty == "Medium":
-        max_value = 500
-    else:
-        max_value = 1000
-
-    guess = st.number_input(f"Enter your guess (1-{max_value}):", min_value=1, max_value=max_value, step=1)
-
-    if st.button("Submit Guess"):
-        st.session_state.attempts += 1
-
-        if guess < st.session_state.number:
-            st.write("Too low! Try again.")
-        elif guess > st.session_state.number:
-            st.write("Too high! Try again.")
-        else:
-            st.write(f"Congratulations! You guessed the number in {st.session_state.attempts} attempts.")
-            st.session_state.leaderboard.append(st.session_state.attempts)
-            st.session_state.leaderboard.sort()
-
-            st.session_state.number = random.randint(1, max_value)  # Reset the game
-            st.session_state.attempts = 0  # Reset attempts
-
-    st.subheader("Leaderboard (Top 5 Scores)")
-    for i, score in enumerate(st.session_state.leaderboard[:5]):
-        st.write(f"{i + 1}. {score} attempts")
+    for i in range(3):
+        cols = st.columns(3)
+        for j in range(3):
+            if cols[j].button(st.session_state.board[i][j] if st.session_state.board[i][j] else " "):
+                if not st.session_state.board[i][j]:
+                    st.session_state.board[i][j] = st.session_state.turn
+                    st.session_state.turn = "O" if st.session_state.turn == "X" else "X"
+                    st.experimental_rerun()
 
 
 if __name__ == "__main__":
