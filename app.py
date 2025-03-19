@@ -1,139 +1,50 @@
 import streamlit as st
-import datetime
+import random
 
-# ---- PAGE CONFIGURATION ----
-st.set_page_config(page_title="My Modern Blog", page_icon="📝", layout="wide")
 
-# ---- CUSTOM CSS STYLING ----
-st.markdown("""
-    <style>
-        /* Background Styling */
-        body {
-            background-color: #f8f9fa;
-        }
+def main():
+    st.title("Simple Game Website")
+    st.header("Guess the Number Game")
 
-        /* Blog Title */
-        .main-title {
-            text-align: center;
-            font-size: 3rem;
-            font-weight: bold;
-            color: #222;
-            margin-bottom: 10px;
-        }
+    if 'number' not in st.session_state:
+        st.session_state.number = random.randint(1, 100)
 
-        /* Blog Subtitle */
-        .subtitle {
-            text-align: center;
-            font-size: 1.3rem;
-            color: #666;
-            margin-bottom: 30px;
-        }
+    if 'attempts' not in st.session_state:
+        st.session_state.attempts = 0
 
-        /* Blog Post Title */
-        .post-title {
-            font-size: 2rem;
-            font-weight: bold;
-            color: #007BFF;
-            margin-bottom: 5px;
-        }
+    if 'leaderboard' not in st.session_state:
+        st.session_state.leaderboard = []
 
-        /* Post Date */
-        .post-date {
-            font-size: 0.9rem;
-            color: #888;
-            margin-bottom: 15px;
-        }
+    difficulty = st.radio("Select Difficulty:", ("Easy", "Medium", "Hard"))
 
-        /* Post Content */
-        .post-content {
-            font-size: 1.1rem;
-            color: #444;
-        }
-
-        /* Navigation Sidebar */
-        .css-1d391kg {
-            background-color: #222 !important;
-            color: white !important;
-        }
-
-        /* Success Message */
-        .stAlert {
-            background-color: #d4edda !important;
-            color: #155724 !important;
-            border-left: 5px solid #28a745 !important;
-        }
-
-        /* Publish Button */
-        .stButton>button {
-            background-color: #007BFF;
-            color: white;
-            font-size: 1rem;
-            border-radius: 8px;
-            padding: 10px 20px;
-        }
-
-        /* Footer */
-        .footer {
-            text-align: center;
-            font-size: 0.9rem;
-            color: #777;
-            margin-top: 50px;
-        }
-    </style>
-""", unsafe_allow_html=True)
-
-# ---- SIDEBAR NAVIGATION ----
-st.sidebar.title("📌 Navigation")
-menu = st.sidebar.radio("Go to", ["🏠 Home", "📝 Write a Post", "👤 About"])
-
-# ---- SESSION STATE FOR BLOG POSTS ----
-if "posts" not in st.session_state:
-    st.session_state.posts = []
-
-# ---- HOME PAGE ----
-if menu == "🏠 Home":
-    st.markdown('<h1 class="main-title">📖 My Modern Blog</h1>', unsafe_allow_html=True)
-    st.markdown('<p class="subtitle">A place to share thoughts and ideas</p>', unsafe_allow_html=True)
-
-    if not st.session_state.posts:
-        st.info("No blog posts yet. Click on 'Write a Post' to add one!")
+    if difficulty == "Easy":
+        max_value = 100
+    elif difficulty == "Medium":
+        max_value = 500
     else:
-        for post in reversed(st.session_state.posts):
-            with st.container():
-                st.markdown(f'<h2 class="post-title">{post["title"]}</h2>', unsafe_allow_html=True)
-                st.markdown(f'<p class="post-date">📝 {post["date"]}</p>', unsafe_allow_html=True)
-                st.markdown(f'<p class="post-content">{post["content"]}</p>', unsafe_allow_html=True)
-                st.markdown("---")
+        max_value = 1000
 
-# ---- NEW POST PAGE ----
-elif menu == "📝 Write a Post":
-    st.markdown('<h1 class="main-title">📝 Create a New Blog Post</h1>', unsafe_allow_html=True)
+    guess = st.number_input(f"Enter your guess (1-{max_value}):", min_value=1, max_value=max_value, step=1)
 
-    with st.form("blog_form"):
-        title = st.text_input("Post Title", placeholder="Enter a catchy title...")
-        content = st.text_area("Post Content", placeholder="Write something amazing...", height=200)
-        submitted = st.form_submit_button("🚀 Publish Post")
+    if st.button("Submit Guess"):
+        st.session_state.attempts += 1
 
-        if submitted and title and content:
-            st.session_state.posts.append({
-                "title": title,
-                "content": content,
-                "date": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            })
-            st.success("🎉 Your blog post has been published!")
+        if guess < st.session_state.number:
+            st.write("Too low! Try again.")
+        elif guess > st.session_state.number:
+            st.write("Too high! Try again.")
+        else:
+            st.write(f"Congratulations! You guessed the number in {st.session_state.attempts} attempts.")
+            st.session_state.leaderboard.append(st.session_state.attempts)
+            st.session_state.leaderboard.sort()
 
-# ---- ABOUT PAGE ----
-elif menu == "👤 About":
-    st.markdown('<h1 class="main-title">👤 About Me</h1>', unsafe_allow_html=True)
+            st.session_state.number = random.randint(1, max_value)  # Reset the game
+            st.session_state.attempts = 0  # Reset attempts
 
-    col1, col2 = st.columns([1, 2])
+    st.subheader("Leaderboard (Top 5 Scores)")
+    for i, score in enumerate(st.session_state.leaderboard[:5]):
+        st.write(f"{i + 1}. {score} attempts")
 
-    with col1:
-        st.image("https://via.placeholder.com/200", width=200)
 
-    with col2:
-        st.write("Hi! I'm a passionate blogger who loves sharing insights and experiences. 🌎")
-        st.write("This blog is built using [Streamlit](https://streamlit.io/). Hope you enjoy reading!")
-
-# ---- FOOTER ----
-st.markdown('<p class="footer">Made with ❤️ using Streamlit</p>', unsafe_allow_html=True)
+if __name__ == "__main__":
+    main()
