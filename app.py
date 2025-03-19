@@ -1,108 +1,67 @@
 import streamlit as st
-import random
+import pandas as pd
 
-# Initialize session state variables
-if "player1_score" not in st.session_state:
-    st.session_state.player1_score = 0
-if "player2_score" not in st.session_state:
-    st.session_state.player2_score = 0
-if "num1" not in st.session_state:
-    st.session_state.num1 = random.randint(1, 10)
-if "num2" not in st.session_state:
-    st.session_state.num2 = random.randint(1, 10)
-if "winner" not in st.session_state:
-    st.session_state.winner = None
-if "options" not in st.session_state:
-    correct = st.session_state.num1 + st.session_state.num2
-    wrong1 = correct + random.choice([-2, -1, 1, 2])
-    wrong2 = correct + random.choice([-3, -1, 1, 3])
-    st.session_state.options = random.sample([correct, wrong1, wrong2], 3)
+# Function to display Banglish lessons
+def show_banglish():
+    st.subheader("Banglish (English Transliteration)")
+    banglish = {
+        "English": [
+            "Hello", "How are you?", "Thank you", "Goodbye", "What is your name?", "My name is...",
+            "Where are you from?", "I am from...", "How much is this?", "I don't understand",
+            "Can you help me?", "I love you", "See you later", "Good morning", "Good night",
+            "Excuse me", "Sorry", "Yes", "No", "Please", "What time is it?", "Where is the bathroom?",
+            "How do I get there?", "I need help", "Can you repeat that?", "I am learning Bengali", "Nice to meet you",
+            "How old are you?", "I am ... years old", "Do you speak English?", "I speak a little Bengali",
+            "Where can I find food?", "This is delicious", "I like this", "I don’t like this", "What is this?",
+            "Can you recommend something?", "How much does it cost?", "I am lost", "I am tired", "I am happy",
+            "I am sad", "I am hungry", "I am thirsty", "What is the weather like?", "Be careful", "Congratulations!",
+            "Happy birthday", "Happy new year", "Good luck", "Have a nice day", "I will be back soon", "Take care",
+            "See you tomorrow", "Let’s go", "Do you understand?", "I understand", "I don’t know", "Where is the bus stop?",
+            "Can you write it down?", "I need a doctor", "Call the police", "It’s an emergency", "Everything is fine",
+            "What’s happening?", "Can I have the bill, please?", "Do you accept credit cards?", "Where can I buy this?",
+            "It’s too expensive", "Can you lower the price?", "That’s a good deal", "What do you recommend?",
+            "I am looking for a hotel", "Where is the nearest hospital?", "I need a taxi", "How far is it?",
+            "Do you have a menu?", "What’s your favorite food?", "I am allergic to...", "Can I try this on?",
+            "Where is the market?", "I would like to buy...", "What’s your phone number?", "Can I take a photo?",
+            "I am married", "I am single", "Do you have children?", "Let’s be friends", "I am busy",
+            "What do you do for work?", "Where do you live?", "I need some rest", "I am having fun", "That’s interesting",
+            "I need water", "Where can I find a bus?", "This is my first time here", "Can you show me the way?",
+            "Where is the nearest ATM?", "What is your favorite place?", "Can I get a discount?"
+        ],
+        "Banglish": [
+            "Assalamualaikum", "Apni kemon achen?", "Dhonnobad", "Alo bidai", "Apnar naam ki?", "Amar naam...",
+            "Apni kotha theke aschen?", "Ami ... theke aschi", "Eta koto taka?", "Ami bujhte parchina",
+            "Apni ki amake shahajjo korte parben?", "Ami tomake bhalobashi", "Pore dekha hobe", "Shuprobhat", "Shubho raatri",
+            "Dukkho korchi", "Maaf korben", "Haan", "Na", "Doyakore", "Ekhon kotota baje?", "Toilet kothay?",
+            "Kivabe jabo?", "Amar shahajjo dorkar", "Apni ki abar bolte parben?", "Ami Bangla shikhchi", "Apnar shathe dekha hoye bhalo laglo",
+            "Apnar boyosh koto?", "Amar boyosh ...", "Apni ki English bolte paren?", "Ami ektu Bangla bolte pari",
+            "Kothay khabar pabo?", "Eta khub moja", "Eta bhalo laglo", "Eta bhalo laglo na", "Eta ki?",
+            "Apni ki kono suggestion dite paren?", "Eta koto dam?", "Ami hariye gechi", "Ami klanto", "Ami khushi",
+            "Ami dukkhito", "Ami khide peyeche", "Ami tesh to", "Akal somoy ki rokom?", "Shabdhan thakun", "Abhinondon!",
+            "Shubho jonmodin", "Shubho noboborsho", "Shubho kamona", "Shubho din hok", "Ami shighroi fire ashbo", "Nije ke shambhalun",
+            "Agami kal dekha hobe", "Cholon jabo", "Apni ki bujhte perechen?", "Ami bujhte perechi", "Ami jani na", "Bus stop kothay?",
+            "Apni ki eta likhe dite parben?", "Amar doctor dorkar", "Police ke dakun", "Ekhon joruri obostha", "Shob thik ache",
+            "Ki hocche?", "Amar bill ta deben?", "Apni ki credit card niben?", "Eta kothay kinte parbo?",
+            "Eta onek dami", "Apni ki daam komate parben?", "Eta bhalo deal", "Apni ki suggest korte parben?",
+            "Ami hotel khujchi", "Kothay najdik hospital?", "Amar ekta taxi dorkar", "Eta koto dur?",
+            "Apnar menu ache?", "Apnar priyo khabar ki?", "Ami ... te allergy achi", "Ami eta porbo?",
+            "Bazaar kothay?", "Ami ... kinbo", "Apnar phone number ki?", "Ami ekta chhobi tulte pari?",
+            "Ami biye korechi", "Ami akek", "Apnar ki shontan ache?", "Cholon bondhu hoi", "Ami byasto",
+            "Apni ki kaj koren?", "Apni kothay thaken?", "Amar ekto bishram dorkar", "Ami moja pachchi", "Eta moja",
+            "Amar pani dorkar", "Kothay bus pabo?", "Eta amar prothom bar ekhane asha", "Apni ki amake rasta dekhiye dite parben?",
+            "Kothay najdik ATM?", "Apnar priyo jaiga konta?", "Ami ki ekta discount pabo?"
+        ]
+    }
+    df = pd.DataFrame(banglish)
+    st.table(df)
 
-# Generate a new question
-def new_question():
-    st.session_state.num1 = random.randint(1, 10)
-    st.session_state.num2 = random.randint(1, 10)
-    correct = st.session_state.num1 + st.session_state.num2
-    wrong1 = correct + random.choice([-2, -1, 1, 2])
-    wrong2 = correct + random.choice([-3, -1, 1, 3])
-    st.session_state.options = random.sample([correct, wrong1, wrong2], 3)
+# Streamlit App
+st.title("Learn Bengali Language")
 
-# Check if the answer is correct
-def check_answer(player, answer):
-    correct_answer = st.session_state.num1 + st.session_state.num2
-    if answer == correct_answer:
-        if player == 1:
-            st.session_state.player1_score += 1
-        else:
-            st.session_state.player2_score += 1
+menu = ["Banglish"]
+choice = st.sidebar.selectbox("Select a section", menu)
 
-    # Check if a player has won
-    if st.session_state.player1_score >= 10:
-        st.session_state.winner = "Player 1"
-    elif st.session_state.player2_score >= 10:
-        st.session_state.winner = "Player 2"
-    else:
-        new_question()
+if choice == "Banglish":
+    show_banglish()
 
-# Layout
-st.title("🔢 Head-to-Head Math Quiz")
-st.subheader("First to 10 points wins!")
-
-if st.session_state.winner:
-    st.success(f"🏆 {st.session_state.winner} Wins!")
-    if st.button("Play Again"):
-        st.session_state.player1_score = 0
-        st.session_state.player2_score = 0
-        st.session_state.winner = None
-        new_question()
-    st.stop()
-
-# ========== PLAYER 2 (Top, Mirrored UI) ==========
-st.markdown(
-    """
-    <div style='text-align: center; transform: rotate(180deg);'>
-        <h2>Player 2</h2>
-        <h3>{} + {} = ?</h3>
-    </div>
-    """.format(st.session_state.num1, st.session_state.num2),
-    unsafe_allow_html=True
-)
-
-# Player 2 Answer Buttons (Flipped)
-st.markdown("<div style='transform: rotate(180deg);'>", unsafe_allow_html=True)
-col1, col2, col3 = st.columns(3)
-with col1:
-    if st.button(f"{st.session_state.options[0]}", key="p2_opt1"):
-        check_answer(2, st.session_state.options[0])
-with col2:
-    if st.button(f"{st.session_state.options[1]}", key="p2_opt2"):
-        check_answer(2, st.session_state.options[1])
-with col3:
-    if st.button(f"{st.session_state.options[2]}", key="p2_opt3"):
-        check_answer(2, st.session_state.options[2])
-st.markdown("</div>", unsafe_allow_html=True)
-
-st.markdown(
-    "<h3 style='text-align: center; transform: rotate(180deg);'>Score: {}</h3>".format(st.session_state.player2_score),
-    unsafe_allow_html=True
-)
-
-st.markdown("---")
-
-# ========== PLAYER 1 (Bottom, Normal UI) ==========
-st.header("Player 1")
-st.write(f"**Question:** {st.session_state.num1} + {st.session_state.num2} = ?")
-
-# Player 1 Answer Buttons
-col4, col5, col6 = st.columns(3)
-with col4:
-    if st.button(f"{st.session_state.options[0]}", key="p1_opt1"):
-        check_answer(1, st.session_state.options[0])
-with col5:
-    if st.button(f"{st.session_state.options[1]}", key="p1_opt2"):
-        check_answer(1, st.session_state.options[1])
-with col6:
-    if st.button(f"{st.session_state.options[2]}", key="p1_opt3"):
-        check_answer(1, st.session_state.options[2])
-
-st.write(f"Score: **{st.session_state.player1_score}**")
+st.write("Enjoy learning Bengali!")
