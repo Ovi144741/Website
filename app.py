@@ -1,4 +1,4 @@
-gimport streamlit as st
+import streamlit as st
 import pandas as pd
 
 # Function to display Banglish lessons
