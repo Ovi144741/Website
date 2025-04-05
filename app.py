@@ -59,6 +59,7 @@ def show_banglish():
 st.title("Learn Bengali Language")
 
 menu = ["Banglish"]
+menu = ["Tic-Tac-Toe"]
 choice = st.sidebar.selectbox("Select a section", menu)
 
 if choice == "Banglish":
