@@ -60,7 +60,7 @@ def show_banglish():
 # Streamlit App
 st.title("Projects")
 
-menu = ["Banglish", "Time Til"]
+menu = ["Banglish", "New Year Countdown"]
 choice = st.sidebar.selectbox("Select a section", menu)
 
 if choice == "Banglish":
@@ -87,5 +87,5 @@ def show_time_til_year():
         time.sleep(1)
 
 
-if choice == "Time Til":
+if choice == "New Year Countdown":
     show_time_til_year()
