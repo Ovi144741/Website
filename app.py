@@ -1,7 +1,5 @@
 import streamlit as st
 import pandas as pd
-from datetime import datetime, timedelta
-import time
 
 # Function to display Banglish lessons
 def show_banglish():
@@ -58,34 +56,12 @@ def show_banglish():
     st.table(df)
 
 # Streamlit App
-st.title("Projects")
+st.title("Learn Bengali Language")
 
-menu = ["Banglish", "New Year Countdown"]
+menu = ["Banglish"]
 choice = st.sidebar.selectbox("Select a section", menu)
 
 if choice == "Banglish":
     show_banglish()
 
-
-def show_time_til_year():
-    st.subheader("Time Until Next Year")
-
-    placeholder = st.empty()
-
-    while True:
-        now = datetime.now()
-        next_year = datetime(now.year + 1, 1, 1)
-        time_left = next_year - now
-
-        days = time_left.days
-        hours, remainder = divmod(time_left.seconds, 3600)
-        minutes, seconds = divmod(remainder, 60)
-
-        # Update the placeholder with new countdown
-        placeholder.markdown(f"### {days}d {hours}h {minutes}m {seconds}s left until {next_year.year}!")
-
-        time.sleep(1)
-
-
-if choice == "New Year Countdown":
-    show_time_til_year()
+st.write("Enjoy learning Bengali!")
