@@ -64,4 +64,11 @@ choice = st.sidebar.selectbox("Select a section", menu)
 if choice == "Banglish":
     show_banglish()
 
-st.write("Enjoy learning Bengali!")
+
+def show_time_til_election():
+    st.subheader("Time Til next Year")
+    pass
+
+
+if choice == "Time Til":
+    show_time_til_election()
