@@ -58,7 +58,7 @@ def show_banglish():
 # Streamlit App
 st.title("Learn Bengali Language")
 
-menu = ["Banglish"]
+menu = ["Banglish", "Time Til"]
 choice = st.sidebar.selectbox("Select a section", menu)
 
 if choice == "Banglish":
