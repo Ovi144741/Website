@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 from datetime import datetime, timedelta
+import time
 
 # Function to display Banglish lessons
 def show_banglish():
@@ -69,15 +70,21 @@ if choice == "Banglish":
 def show_time_til_year():
     st.subheader("Time Until Next Year")
 
-    now = datetime.now()
-    next_year = datetime(now.year + 1, 1, 1)
-    time_left = next_year - now
+    placeholder = st.empty()
 
-    days = time_left.days
-    hours, remainder = divmod(time_left.seconds, 3600)
-    minutes, seconds = divmod(remainder, 60)
+    while True:
+        now = datetime.now()
+        next_year = datetime(now.year + 1, 1, 1)
+        time_left = next_year - now
 
-    st.write(f"{days} days, {hours} hours, {minutes} minutes, {seconds} seconds left until {next_year.year}!")
+        days = time_left.days
+        hours, remainder = divmod(time_left.seconds, 3600)
+        minutes, seconds = divmod(remainder, 60)
+
+        # Update the placeholder with new countdown
+        placeholder.markdown(f"### {days}d {hours}h {minutes}m {seconds}s left until {next_year.year}!")
+
+        time.sleep(1)
 
 
 if choice == "Time Til":
