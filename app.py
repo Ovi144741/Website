@@ -56,7 +56,7 @@ def show_banglish():
     st.table(df)
 
 # Streamlit App
-st.title("Learn Bengali Language")
+st.title("Projects")
 
 menu = ["Banglish", "Time Til"]
 choice = st.sidebar.selectbox("Select a section", menu)
